@@ -50,16 +50,6 @@ if [[ -z "$iface" ]]; then
 fi
 
 
-function test()
-{
-    test_state=$(cat /sys/class/net/${iface}/operstate)
-    if [[ $test_state == "down" ]]; then
-        echo "${iface} down. exiting."
-        exit
-    fi
-}
-
-
 # analyze args
 for arg in ${ARGS[@]}
 do
