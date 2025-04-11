@@ -44,25 +44,22 @@ function helpz() {
 	echo "        192.168.68.101..."
 	echo "        192.168.68.102..."
 	echo "        192.168.68.103..."
-	exit
 }
 
 function check() {
-    num=$1
-    wait=$2
-    ip=$3
-    ret=$(ping -c ${num} -w ${wait} ${ip})
-    test=$(echo ${ret} | grep "bytes from ${ip}" | wc -l)
+    local num=$1
+    local wait=$2
+    local ip=$3
+    local ret=$(ping -c ${num} -w ${wait} ${ip})
+    local test=$(echo ${ret} | grep "bytes from ${ip}" | wc -l)
     if [[ ${test} -gt 0 ]]; then
         echo "${ip} is up..."
     fi
 }
 
-export -f helpz
-export -f check
-
 if [[ $(echo ${args} | wc -w) == 0 ]]; then
     helpz
+    exit 0
 fi
 
 for arg in ${args}
@@ -86,3 +83,5 @@ for arg in ${args}
 do
     check ${num} ${wait} ${arg} 2>/dev/null & disown
 done
+
+exit 0
