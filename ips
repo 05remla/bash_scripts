@@ -1,0 +1,92 @@
+#!/bin/bash
+###############################################################
+#CREATOR: o5
+#DATE: last modified APR.29,2014
+#PURPOSE: to display ipv4 information
+###############################################################
+ARGS=($@)
+function help()
+{
+    echo "Options"
+    echo "--iface= | -i=   specify iface"
+    echo "--lan    | -l    show lan address"
+    echo "--wan    | -w    show wan address"
+    echo "--net    | -n    show local subnet"
+    echo
+}
+
+
+function test()                                                                                                                                                                    
+{                                                                                                                                                                                  
+    test_state=$(cat /sys/class/net/${iface}/operstate)                                                                                                                            
+    if [[ $test_state == "down" ]]; then                                                                                                                                           
+        echo "${iface} down. exiting."                                                                                                                                             
+        exit 1                                                                                                                                                                       
+    fi                                                                                                                                                                             
+}
+
+
+# if no args passed display help info
+if [[ $(echo ${ARGS[@]} | wc -w) == 0 ]]; then
+    help
+    exit 0
+fi
+
+
+# check args for iface decleration
+for arg in ${ARGS[@]}
+do
+    case $arg in
+        '--iface='*|'-f='*)
+            iface=$(echo $arg | cut -d= -f2)
+        ;;
+    esac
+done
+
+
+# if iface not declared use iface to default route
+if [[ -z "$iface" ]]; then
+    iface=$(ip route | grep default | awk '{print $5}')
+fi
+
+
+function test()
+{
+    test_state=$(cat /sys/class/net/${iface}/operstate)
+    if [[ $test_state == "down" ]]; then
+        echo "${iface} down. exiting."
+        exit
+    fi
+}
+
+
+# analyze args
+for arg in ${ARGS[@]}
+do
+    case $arg in
+        '--lan'|'-l')
+            test
+            LAN=$(ifconfig $iface | grep 'inet ' | awk '{print $2}')
+            echo $LAN
+        ;;
+
+        '--wan'|'-w')
+            test
+            WAN=$(curl -s 'https://api.ipify.org')
+            echo $WAN
+        ;;
+
+        '--net'|'-n')
+            test
+            ip route | grep $iface | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1\}[/][0-9]\{1,3\}'
+        ;;
+
+        '-h'|'--help')
+            help
+            exit 0
+        ;;
+
+    esac
+done
+
+exit 0
