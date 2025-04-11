@@ -1,4 +1,6 @@
 #!/usr/bin/bash
+# 05remla@gmail.com
+# modified: 
 args=$@
 wait=2
 num=2
