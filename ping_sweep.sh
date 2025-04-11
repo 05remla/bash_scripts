@@ -67,7 +67,7 @@ do
     case ${arg} in
         '-h'|'--help')
             helpz
-            exit
+            exit 0
         ;;
         '-c='*|'--count='*)
 		    num=$(echo ${arg} | cut -d= -f2)
