@@ -1,9 +1,9 @@
 #!/bin/bash
-###############################################################
-#CREATOR: o5
-#DATE: last modified APR.29,2014
-#PURPOSE: to display ipv4 information
-###############################################################
+###################################################################
+#CREATOR: 05remla@gmail.com
+#DATE: last modified APR.11,2025
+#PURPOSE: display ipv4 information of specified (or defualt) iface
+###################################################################
 ARGS=($@)
 function help()
 {
@@ -11,7 +11,7 @@ function help()
     echo "--iface= | -i=   specify iface"
     echo "--lan    | -l    show lan address"
     echo "--wan    | -w    show wan address"
-    echo "--net    | -n    show local subnet"
+    echo "--net    | -n    show local net"
     echo
 }
 
@@ -44,13 +44,13 @@ do
 done
 
 
-# if iface not declared use iface to default route
+# if iface not declared use iface from default route
 if [[ -z "$iface" ]]; then
     iface=$(ip route | grep default | awk '{print $5}')
 fi
 
 
-# analyze args
+# analyze all args
 for arg in ${ARGS[@]}
 do
     case $arg in
